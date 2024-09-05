@@ -14,6 +14,7 @@ public class PropostaService {
 
     @Transactional
     public PropostaResponseDTO criar(PropostaRequestDTO dto) {
+        var entitySave = repository.save(null);
         return null;
     }
 }
