@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface PropostaMapper {
     PropostaMapper INSTANCE = Mappers.getMapper(PropostaMapper.class);
@@ -28,4 +30,6 @@ public interface PropostaMapper {
     @Mapping(target = "telefone", source = "usuario.telefone")
     @Mapping(target = "renda", source = "usuario.renda")
     PropostaResponseDTO toResponseDTO(Proposta entity);
+
+    List<PropostaResponseDTO> toListResponseDTO(List<Proposta> listEntity);
 }

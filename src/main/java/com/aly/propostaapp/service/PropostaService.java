@@ -8,10 +8,16 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PropostaService {
     private final PropostaRepository repository;
+
+    public List<PropostaResponseDTO> buscarTodos() {
+        return PropostaMapper.INSTANCE.toListResponseDTO(repository.findAll());
+    }
 
     @Transactional
     public PropostaResponseDTO criar(PropostaRequestDTO dto) {
