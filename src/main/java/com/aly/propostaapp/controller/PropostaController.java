@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/proposta")
@@ -18,7 +21,13 @@ public class PropostaController {
 
     @PostMapping("/criar")
     public ResponseEntity<PropostaResponseDTO> criar(@RequestBody PropostaRequestDTO dto) {
-        var proposta = service.criar(dto);
-        return ResponseEntity.ok().body(proposta);
+        var response = service.criar(dto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequestUri()
+                .path("/{id}")
+                .buildAndExpand(response.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(response);
     }
 }

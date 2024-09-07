@@ -1,5 +1,6 @@
 package com.aly.propostaapp.service;
 
+import com.aly.propostaapp.helpper.mepper.PropostaMapper;
 import com.aly.propostaapp.payload.PropostaRequestDTO;
 import com.aly.propostaapp.payload.PropostaResponseDTO;
 import com.aly.propostaapp.repository.PropostaRepository;
@@ -14,7 +15,7 @@ public class PropostaService {
 
     @Transactional
     public PropostaResponseDTO criar(PropostaRequestDTO dto) {
-        var entitySave = repository.save(null);
-        return null;
+        var entitySave = repository.save(PropostaMapper.INSTANCE.toProposta(dto));
+        return PropostaMapper.INSTANCE.toResponseDTO(entitySave);
     }
 }
