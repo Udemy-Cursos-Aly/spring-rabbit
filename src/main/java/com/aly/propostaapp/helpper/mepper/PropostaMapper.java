@@ -7,7 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 @Mapper
 public interface PropostaMapper {
@@ -29,7 +31,12 @@ public interface PropostaMapper {
     @Mapping(target = "cpf", source = "usuario.cpf")
     @Mapping(target = "telefone", source = "usuario.telefone")
     @Mapping(target = "renda", source = "usuario.renda")
+    @Mapping(target = "valorSolicitadoFmt", expression = "java(setValorSolicitadoFmt(entity))")
     PropostaResponseDTO toResponseDTO(Proposta entity);
 
     List<PropostaResponseDTO> toListResponseDTO(List<Proposta> listEntity);
+
+    default String setValorSolicitadoFmt(Proposta entity) {
+        return NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format(entity.getValorSolicitado());
+    }
 }
