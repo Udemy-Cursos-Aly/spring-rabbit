@@ -1,5 +1,6 @@
 package com.aly.propostaapp.service;
 
+import com.aly.propostaapp.entity.Proposta;
 import com.aly.propostaapp.helpper.mepper.PropostaMapper;
 import com.aly.propostaapp.payload.PropostaRequestDTO;
 import com.aly.propostaapp.payload.PropostaResponseDTO;
@@ -27,9 +28,17 @@ public class PropostaService {
     @Transactional
     public PropostaResponseDTO criar(PropostaRequestDTO dto) {
         var entitySave = repository.save(PropostaMapper.INSTANCE.toProposta(dto));
-        var response = PropostaMapper.INSTANCE.toResponseDTO(entitySave);
+        notificarRabbitMQ(entitySave);
 
-        notificacaoService.notificar(response, exchange);
-        return response;
+        return PropostaMapper.INSTANCE.toResponseDTO(entitySave);
+    }
+
+    private void notificarRabbitMQ(Proposta entity) {
+        try {
+            notificacaoService.notificar(entity, exchange);
+        } catch (RuntimeException ex) {
+            entity.setIntegrada(Boolean.FALSE);
+            repository.save(entity);
+        }
     }
 }

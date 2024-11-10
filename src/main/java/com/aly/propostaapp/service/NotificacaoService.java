@@ -1,6 +1,6 @@
 package com.aly.propostaapp.service;
 
-import com.aly.propostaapp.payload.PropostaResponseDTO;
+import com.aly.propostaapp.entity.Proposta;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class NotificacaoService {
     private final RabbitTemplate template;
 
-    public void notificar(PropostaResponseDTO dto, String exchange) {
-        template.convertAndSend(exchange, "", dto);
+    public void notificar(Proposta entity, String exchange) {
+        template.convertAndSend(exchange, "", entity);
     }
 }
