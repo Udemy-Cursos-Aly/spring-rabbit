@@ -1,4 +1,4 @@
-package com.aly.propostaapp.helpper.mepper;
+package com.aly.propostaapp.mapper;
 
 import com.aly.propostaapp.entity.Proposta;
 import com.aly.propostaapp.payload.PropostaRequestDTO;

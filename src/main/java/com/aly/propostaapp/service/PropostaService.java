@@ -1,7 +1,7 @@
 package com.aly.propostaapp.service;
 
 import com.aly.propostaapp.entity.Proposta;
-import com.aly.propostaapp.helpper.mepper.PropostaMapper;
+import com.aly.propostaapp.mapper.PropostaMapper;
 import com.aly.propostaapp.payload.PropostaRequestDTO;
 import com.aly.propostaapp.payload.PropostaResponseDTO;
 import com.aly.propostaapp.repository.PropostaRepository;
@@ -20,17 +20,19 @@ public class PropostaService {
 
     private final PropostaRepository repository;
     private final NotificacaoService notificacaoService;
+    private final PropostaMapper propostaMapper = PropostaMapper.INSTANCE;
 
     public List<PropostaResponseDTO> buscarTodos() {
-        return PropostaMapper.INSTANCE.toListResponseDTO(repository.findAll());
+        return propostaMapper.toListResponseDTO(repository.findAll());
     }
 
     @Transactional
     public PropostaResponseDTO criar(PropostaRequestDTO dto) {
-        var entitySave = repository.save(PropostaMapper.INSTANCE.toProposta(dto));
+        final Proposta entity = propostaMapper.toProposta(dto);
+        var entitySave = repository.save(entity);
         notificarRabbitMQ(entitySave);
 
-        return PropostaMapper.INSTANCE.toResponseDTO(entitySave);
+        return propostaMapper.toResponseDTO(entitySave);
     }
 
     private void notificarRabbitMQ(Proposta entity) {
