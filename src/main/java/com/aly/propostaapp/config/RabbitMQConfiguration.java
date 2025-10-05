@@ -13,8 +13,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfiguration {
+    /**
+     * Filas e exchanges do RabbitMQ que precisam ser criadas
+     */
     @Value("${rabbit.mq.exchange}")
     private String exchange;
+
+    @Value("${rabbit.mq.pc.exchange}")
+    private String exchangePropostaConcluida;
 
     @Value("${rabbit.mq.queue.pp.ms.credito}")
     private String queuePPMsCredito;
@@ -22,13 +28,14 @@ public class RabbitMQConfiguration {
     @Value("${rabbit.mq.queue.pp.ms.notificacao}")
     private String queuePPMsNotificacao;
 
-    @Value("${rabbit.mq.queue.pc.ms.proposta}")
-    private String queuePCMsProposta;
+    @Value("${rabbit.mq.queue.pc.ms.credito}")
+    private String queuePCMsCredito;
 
     @Value("${rabbit.mq.queue.pc.ms.notificacao}")
     private String queuePCMsNotificacao;
-    /*
-      @TODO: Configuração de criação de filar e do admin
+
+    /**
+     * Criação de filas
      */
     @Bean
     public Queue criarFilaPPMsCredito() {
@@ -41,8 +48,8 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public Queue criarFilaPCMsProposta() {
-        return QueueBuilder.durable(queuePCMsProposta).build();
+    public Queue criarFilaPCMsCredito() {
+        return QueueBuilder.durable(queuePCMsCredito).build();
     }
 
     @Bean
@@ -60,11 +67,22 @@ public class RabbitMQConfiguration {
         return event -> rabbitAdmin.initialize();
     }
 
+    /**
+     * Criação de Exchanges do tipo Fanout
+     */
     @Bean
     public FanoutExchange criarExchangePP() {
         return ExchangeBuilder.fanoutExchange(exchange).build();
     }
 
+    @Bean
+    public FanoutExchange criarExchangePC() {
+        return ExchangeBuilder.fanoutExchange(exchangePropostaConcluida).build();
+    }
+
+    /**
+     * Criação dos Bindings entre filas e exchanges
+     */
     @Bean
     public Binding criarBindingPPMsCredito() {
         return BindingBuilder.bind(criarFilaPPMsCredito()).to(criarExchangePP());
@@ -76,10 +94,26 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Binding criarBindingPCMsCredito() {
+        return BindingBuilder.bind(criarFilaPCMsCredito()).to(criarExchangePC());
+    }
+
+    @Bean
+    public Binding criarBindingPCMsNotificacao() {
+        return BindingBuilder.bind(criarFilaPCMsNotificacao()).to(criarExchangePC());
+    }
+
+    /**
+     * Configuração de mensagens que vamos enviar em consumir - Serialização/Desserialização
+     */
+    @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
+    /**
+     * Configuração do rabbitTemplate que é utilizado para enviar as mensagens para as filas
+     */
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();
