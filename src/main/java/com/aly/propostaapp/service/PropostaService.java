@@ -5,10 +5,10 @@ import com.aly.propostaapp.mapper.PropostaMapper;
 import com.aly.propostaapp.payload.PropostaRequestDTO;
 import com.aly.propostaapp.payload.PropostaResponseDTO;
 import com.aly.propostaapp.repository.PropostaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,10 +29,15 @@ public class PropostaService {
     @Transactional
     public PropostaResponseDTO criar(PropostaRequestDTO dto) {
         final Proposta entity = propostaMapper.toProposta(dto);
-        var entitySave = repository.save(entity);
+        var entitySave = salvarProposta(entity);
         notificarRabbitMQ(entitySave);
 
         return propostaMapper.toResponseDTO(entitySave);
+    }
+
+    @Transactional
+    public Proposta salvarProposta(Proposta proposta) {
+        return repository.save(proposta);
     }
 
     private void notificarRabbitMQ(Proposta entity) {

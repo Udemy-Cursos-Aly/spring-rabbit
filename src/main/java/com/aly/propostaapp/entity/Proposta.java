@@ -28,7 +28,7 @@ public class Proposta {
     private boolean integrada;
     private String observacao;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_usuario")
     @JsonManagedReference
     private Usuario usuario;

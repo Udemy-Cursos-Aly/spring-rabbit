@@ -26,8 +26,6 @@ public class PropostaSchedule {
 
     @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
     public void buscarPropostaSemIntegracao() {
-        log.info("[Gateway] - Buscando propostas sem integração");
-
         repository.findAllByIntegradaIsFalse().forEach(this::notificarAndAtualizarPropostaSemIntegracao);
     }
 
