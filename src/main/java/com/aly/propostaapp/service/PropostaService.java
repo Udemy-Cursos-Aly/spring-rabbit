@@ -1,6 +1,7 @@
 package com.aly.propostaapp.service;
 
 import com.aly.propostaapp.entity.Proposta;
+import com.aly.propostaapp.exceptions.PropostaNaoEncontradaException;
 import com.aly.propostaapp.mapper.PropostaMapper;
 import com.aly.propostaapp.payload.PropostaRequestDTO;
 import com.aly.propostaapp.payload.PropostaResponseDTO;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,10 @@ public class PropostaService {
     @Transactional
     public Proposta salvarProposta(Proposta proposta) {
         return repository.save(proposta);
+    }
+
+    public void atualizarPropostaAprovada(Long id, Boolean aprovada, String observacao) {
+        repository.atualizarProposta(aprovada, observacao, id);
     }
 
     private void notificarRabbitMQ(Proposta entity) {

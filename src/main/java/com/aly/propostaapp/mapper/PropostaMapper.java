@@ -21,7 +21,7 @@ public interface PropostaMapper {
     @Mapping(target = "usuario.telefone", source = "telefone")
     @Mapping(target = "usuario.renda", source = "renda")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "aprovado", ignore = true)
+    @Mapping(target = "aprovada", ignore = true)
     @Mapping(target = "integrada", constant = "true")
     @Mapping(target = "observacao", ignore = true)
     Proposta toProposta(PropostaRequestDTO dto);
@@ -32,6 +32,7 @@ public interface PropostaMapper {
     @Mapping(target = "telefone", source = "usuario.telefone")
     @Mapping(target = "renda", source = "usuario.renda")
     @Mapping(target = "valorSolicitadoFmt", expression = "java(setValorSolicitadoFmt(entity))")
+    @Mapping(target = "aprovada", source = "aprovada")
     PropostaResponseDTO toResponseDTO(Proposta entity);
 
     List<PropostaResponseDTO> toListResponseDTO(List<Proposta> listEntity);
